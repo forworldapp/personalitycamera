@@ -1,10 +1,10 @@
 import {
   users,
-  agePredictions,
+  personalityAnalysis,
   type User,
   type UpsertUser,
-  type InsertAgePrediction,
-  type AgePrediction,
+  type InsertPersonalityAnalysis,
+  type PersonalityAnalysis,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -16,10 +16,10 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   
-  // Age prediction operations
-  createAgePrediction(prediction: InsertAgePrediction): Promise<AgePrediction>;
-  getUserAgePredictions(userId: string, limit?: number): Promise<AgePrediction[]>;
-  getAgePrediction(id: string): Promise<AgePrediction | undefined>;
+  // Personality analysis operations
+  createPersonalityAnalysis(analysis: InsertPersonalityAnalysis): Promise<PersonalityAnalysis>;
+  getUserPersonalityAnalyses(userId: string, limit?: number): Promise<PersonalityAnalysis[]>;
+  getPersonalityAnalysis(id: string): Promise<PersonalityAnalysis | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -46,30 +46,30 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  // Age prediction operations
-  async createAgePrediction(prediction: InsertAgePrediction): Promise<AgePrediction> {
+  // Personality analysis operations
+  async createPersonalityAnalysis(analysis: InsertPersonalityAnalysis): Promise<PersonalityAnalysis> {
     const [created] = await db
-      .insert(agePredictions)
-      .values(prediction)
+      .insert(personalityAnalysis)
+      .values(analysis)
       .returning();
     return created;
   }
 
-  async getUserAgePredictions(userId: string, limit: number = 10): Promise<AgePrediction[]> {
+  async getUserPersonalityAnalyses(userId: string, limit: number = 10): Promise<PersonalityAnalysis[]> {
     return await db
       .select()
-      .from(agePredictions)
-      .where(eq(agePredictions.userId, userId))
-      .orderBy(desc(agePredictions.createdAt))
+      .from(personalityAnalysis)
+      .where(eq(personalityAnalysis.userId, userId))
+      .orderBy(desc(personalityAnalysis.createdAt))
       .limit(limit);
   }
 
-  async getAgePrediction(id: string): Promise<AgePrediction | undefined> {
-    const [prediction] = await db
+  async getPersonalityAnalysis(id: string): Promise<PersonalityAnalysis | undefined> {
+    const [analysis] = await db
       .select()
-      .from(agePredictions)
-      .where(eq(agePredictions.id, id));
-    return prediction;
+      .from(personalityAnalysis)
+      .where(eq(personalityAnalysis.id, id));
+    return analysis;
   }
 }
 
