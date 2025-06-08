@@ -131,7 +131,7 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
     const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
     setCapturedImage(imageDataUrl);
 
-    // Convert to file for upload
+    // Convert to file for upload and analyze immediately
     canvas.toBlob((blob) => {
       if (blob) {
         const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
@@ -139,7 +139,8 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
       }
     }, 'image/jpeg', 0.8);
 
-    stopCamera();
+    // Keep camera running, don't stop it
+    // stopCamera();
   };
 
   const retakePhoto = () => {
@@ -197,12 +198,6 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
               muted
               className="w-full h-full object-cover"
             />
-          ) : capturedImage ? (
-            <img
-              src={capturedImage}
-              alt="Captured"
-              className="w-full h-full object-cover"
-            />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-gradient-to-b from-gray-800 to-gray-900">
               <div className="w-20 h-20 border-4 border-dashed border-gray-400 rounded-full flex items-center justify-center mb-4">
@@ -244,7 +239,7 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
 
         {/* Camera Controls */}
         <div className="flex justify-center space-x-3 mt-4">
-          {!cameraActive && !capturedImage && (
+          {!cameraActive && (
             <Button
               onClick={startCamera}
               className="bg-purple-500 hover:bg-purple-600 text-white"
@@ -259,11 +254,11 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
             <>
               <Button
                 onClick={capturePhoto}
-                className="bg-green-500 hover:bg-green-600 text-white"
+                className="bg-green-500 hover:bg-green-600 text-white px-8"
                 disabled={analyzePersonality.isPending}
               >
                 <Camera className="w-4 h-4 mr-2" />
-                {language === 'ko' ? '촬영' : 'Capture'}
+                {language === 'ko' ? '촬영하기' : 'Capture'}
               </Button>
               <Button
                 onClick={stopCamera}
@@ -274,16 +269,6 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
                 {language === 'ko' ? '정지' : 'Stop'}
               </Button>
             </>
-          )}
-
-          {capturedImage && !analyzePersonality.isPending && (
-            <Button
-              onClick={retakePhoto}
-              variant="outline"
-            >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              {language === 'ko' ? '다시 촬영' : 'Retake'}
-            </Button>
           )}
         </div>
 
