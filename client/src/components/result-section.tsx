@@ -117,101 +117,111 @@ export default function ResultSection({ result, capturedImage, onRetake }: Resul
               <span className="text-sm font-medium text-gray-600">현재 vs 20년 후</span>
               <span className="text-purple-500">🔮</span>
             </div>
-            <div className="flex justify-center space-x-4 mb-4">
-              {/* Current Image */}
+            {/* Large comparison images */}
+            <div className="space-y-4 mb-4">
+              {/* Current Image - Large */}
               <div className="text-center">
-                <div className="relative w-24 h-24">
+                <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center justify-center">
+                  <span className="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
+                  현재 모습 ({result.predictedAge}세)
+                </h4>
+                <div className="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden border-3 border-blue-200 shadow-lg">
                   {capturedImage ? (
-                    <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-blue-200">
-                      <img 
-                        src={capturedImage} 
-                        alt="Current" 
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white text-xs font-bold px-1 py-0.5 rounded-full">
-                        현재
-                      </div>
-                    </div>
+                    <img 
+                      src={capturedImage} 
+                      alt="Current" 
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-200 to-indigo-200 rounded-full flex items-center justify-center">
-                      <span className="text-blue-400 text-xl">👤</span>
+                    <div className="w-full h-full bg-gradient-to-br from-blue-200 to-indigo-200 flex items-center justify-center">
+                      <span className="text-blue-400 text-4xl">👤</span>
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-gray-600 mt-1">{result.predictedAge}세</p>
               </div>
 
-              {/* Arrow */}
-              <div className="flex items-center">
-                <div className="text-2xl text-purple-400">→</div>
+              {/* Arrow down */}
+              <div className="flex justify-center">
+                <div className="text-3xl text-purple-400 transform rotate-90">→</div>
               </div>
 
-              {/* Future Image */}
+              {/* Future Image - Large with dramatic effects */}
               <div className="text-center">
-                <div className="relative w-24 h-24">
+                <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center justify-center">
+                  <span className="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
+                  20년 후 예상 모습 ({result.futureAge}세)
+                </h4>
+                <div className="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden border-3 border-purple-200 shadow-lg">
                   {capturedImage ? (
-                    <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-purple-200">
+                    <div className="relative w-full h-full">
                       <img 
                         src={capturedImage} 
                         alt="Future prediction" 
                         className="w-full h-full object-cover"
                       />
-                      {/* Subtle aging overlay effects */}
+                      {/* More dramatic aging effects */}
                       <div className="absolute inset-0 pointer-events-none">
-                        {/* Gentle aging filter */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-amber-50/20 mix-blend-soft-light"></div>
+                        {/* Aging color filter */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-yellow-100/20 via-amber-100/15 to-orange-100/25 mix-blend-multiply"></div>
                         
-                        {/* Realistic aging overlay */}
-                        <svg className="w-full h-full" viewBox="0 0 128 128">
-                          {/* Subtle wrinkle lines around eyes */}
+                        {/* Skin tone adjustment */}
+                        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-yellow-200/15 mix-blend-soft-light"></div>
+                        
+                        {/* Dramatic aging overlay */}
+                        <svg className="w-full h-full" viewBox="0 0 192 192">
+                          {/* Eye wrinkles */}
                           <path 
-                            d="M30 42 Q32 44 34 42 M94 42 Q96 44 98 42" 
-                            stroke="rgba(139, 119, 101, 0.3)" 
-                            strokeWidth="0.3" 
+                            d="M45 60 Q50 65 55 60 M45 65 Q50 70 55 65 M45 70 Q50 75 55 70 M137 60 Q142 65 147 60 M137 65 Q142 70 147 65 M137 70 Q142 75 147 70" 
+                            stroke="rgba(101, 67, 33, 0.6)" 
+                            strokeWidth="1.5" 
                             fill="none"
                           />
-                          {/* Light forehead lines */}
+                          {/* Forehead wrinkles */}
                           <path 
-                            d="M40 30 Q64 28 88 30" 
-                            stroke="rgba(139, 119, 101, 0.25)" 
-                            strokeWidth="0.3" 
+                            d="M55 40 Q96 35 137 40 M58 45 Q96 40 134 45 M60 50 Q96 45 132 50" 
+                            stroke="rgba(101, 67, 33, 0.5)" 
+                            strokeWidth="1.2" 
                             fill="none"
                           />
-                          {/* Slight smile lines */}
+                          {/* Smile lines and mouth area */}
                           <path 
-                            d="M42 75 Q48 78 52 75 M76 75 Q82 78 86 75" 
-                            stroke="rgba(139, 119, 101, 0.2)" 
-                            strokeWidth="0.3" 
+                            d="M60 110 Q75 120 90 110 Q105 120 132 110 M65 125 Q80 130 95 125 Q110 130 127 125" 
+                            stroke="rgba(101, 67, 33, 0.45)" 
+                            strokeWidth="1" 
                             fill="none"
                           />
-                          {/* Gray hair spots (more subtle) */}
-                          <circle cx="45" cy="20" r="1.5" fill="rgba(200, 200, 200, 0.4)" />
-                          <circle cx="60" cy="18" r="2" fill="rgba(210, 210, 210, 0.4)" />
-                          <circle cx="75" cy="21" r="1.5" fill="rgba(190, 190, 190, 0.3)" />
-                          {/* Very subtle age spots */}
-                          <circle cx="40" cy="60" r="0.8" fill="rgba(160, 140, 120, 0.3)" />
-                          <circle cx="85" cy="65" r="0.6" fill="rgba(160, 140, 120, 0.25)" />
-                          {/* Maturity overlay instead of heavy aging */}
-                          <rect x="0" y="0" width="128" height="128" fill="url(#maturity-filter)" opacity="0.08"/>
-                          <defs>
-                            <pattern id="maturity-filter" patternUnits="userSpaceOnUse" width="8" height="8">
-                              <circle cx="4" cy="4" r="0.3" fill="rgba(139, 119, 101, 0.2)"/>
-                            </pattern>
-                          </defs>
+                          {/* Neck wrinkles */}
+                          <path 
+                            d="M70 160 Q96 155 122 160 M72 170 Q96 165 120 170 M74 180 Q96 175 118 180" 
+                            stroke="rgba(101, 67, 33, 0.4)" 
+                            strokeWidth="1" 
+                            fill="none"
+                          />
+                          {/* Gray hair areas */}
+                          <circle cx="65" cy="30" r="6" fill="rgba(210, 210, 210, 0.7)" />
+                          <circle cx="80" cy="25" r="5" fill="rgba(200, 200, 200, 0.6)" />
+                          <circle cx="95" cy="28" r="7" fill="rgba(220, 220, 220, 0.7)" />
+                          <circle cx="110" cy="26" r="5" fill="rgba(190, 190, 190, 0.6)" />
+                          <circle cx="125" cy="32" r="6" fill="rgba(215, 215, 215, 0.7)" />
+                          {/* Age spots */}
+                          <circle cx="70" cy="85" r="2" fill="rgba(139, 119, 101, 0.5)" />
+                          <circle cx="125" cy="90" r="1.5" fill="rgba(139, 119, 101, 0.4)" />
+                          <circle cx="105" cy="75" r="1.5" fill="rgba(139, 119, 101, 0.45)" />
+                          <circle cx="85" cy="95" r="1" fill="rgba(139, 119, 101, 0.35)" />
                         </svg>
-                      </div>
-                      {/* Age indicator badge */}
-                      <div className="absolute -bottom-1 -right-1 bg-purple-500 text-white text-xs font-bold px-1 py-0.5 rounded-full">
-                        +20년
+                        
+                        {/* Age badge */}
+                        <div className="absolute top-2 right-2 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                          +20년
+                        </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-purple-200 to-pink-200 rounded-full flex items-center justify-center">
-                      <span className="text-purple-400 text-xl">👤</span>
+                    <div className="w-full h-full bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center">
+                      <span className="text-purple-400 text-4xl">👤</span>
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-gray-600 mt-1">{result.futureAge}세</p>
               </div>
             </div>
             
