@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Camera, StopCircle, RotateCcw, Globe } from "lucide-react";
+import { Camera, StopCircle, RotateCcw } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 interface PersonalityResult {
@@ -39,11 +38,12 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
 
   const analyzePersonality = useMutation({
     mutationFn: async (imageFile: File): Promise<PersonalityResult> => {
+      console.log('Created file:', imageFile.name, imageFile.size, imageFile.type);
+      console.log('Starting personality analysis with file:', imageFile.name, imageFile.size, imageFile.type);
+      
       const formData = new FormData();
       formData.append('image', imageFile);
       
-      console.log('Created file:', imageFile.name, imageFile.size, imageFile.type);
-      console.log('Starting personality analysis with file:', imageFile.name, imageFile.size, imageFile.type);
       console.log('FormData entries:');
       Array.from(formData.entries()).forEach(([key, value]) => {
         console.log(key, value);
@@ -52,6 +52,7 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
       const response = await fetch('/api/analyze-personality', {
         method: 'POST',
         body: formData,
+        credentials: 'include', // Include cookies for authentication
       });
       
       if (!response.ok) {
@@ -80,21 +81,27 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
   const startCamera = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' },
+        video: { 
+          facingMode: 'user',
+          width: { ideal: 720 },
+          height: { ideal: 1280 }
+        },
         audio: false
       });
       
       setStream(mediaStream);
       setCameraActive(true);
+      setCapturedImage(null);
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        videoRef.current.play();
       }
     } catch (error) {
       console.error('카메라 접근 실패:', error);
       toast({
         title: "카메라 오류",
-        description: "카메라에 접근할 수 없습니다.",
+        description: "카메라에 접근할 수 없습니다. 브라우저 설정을 확인해주세요.",
         variant: "destructive",
       });
     }
@@ -181,8 +188,8 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
           <span className="text-purple-500">🧠</span>
         </div>
 
-        <div className="relative aspect-square max-w-sm mx-auto bg-gray-200 rounded-2xl overflow-hidden">
-          {cameraActive ? (
+        <div className="relative bg-black rounded-3xl overflow-hidden shadow-2xl mx-4" style={{ aspectRatio: '3/4' }}>
+          {cameraActive && stream ? (
             <video
               ref={videoRef}
               autoPlay
@@ -197,24 +204,38 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="text-center">
-                <Camera className="w-16 h-16 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-500 text-sm">
-                  {language === 'ko' ? '카메라를 시작하세요' : 'Start camera'}
-                </p>
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-gradient-to-b from-gray-800 to-gray-900">
+              <div className="w-20 h-20 border-4 border-dashed border-gray-400 rounded-full flex items-center justify-center mb-4">
+                <span className="text-3xl text-gray-400">📷</span>
+              </div>
+              <p className="text-gray-300 text-center px-6">
+                {language === 'ko' ? '카메라를 시작하여\n얼굴을 촬영해주세요' : 'Start camera to\ncapture your face'}
+              </p>
+            </div>
+          )}
+
+          {/* Face Detection Overlay */}
+          {cameraActive && !analyzePersonality.isPending && (
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-56 border-2 border-purple-400/60 rounded-2xl transition-opacity duration-300">
+                <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-purple-400 rounded-tl-lg"></div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-purple-400 rounded-tr-lg"></div>
+                <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-purple-400 rounded-bl-lg"></div>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-purple-400 rounded-br-lg"></div>
               </div>
             </div>
           )}
 
+          {/* Loading Overlay */}
           {analyzePersonality.isPending && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <div className="text-center text-white">
-                <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                <p className="text-sm">
-                  {language === 'ko' ? '성격 분석 중...' : 'Analyzing personality...'}
-                </p>
-              </div>
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center transition-opacity duration-300">
+              <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-white font-medium">
+                {language === 'ko' ? 'AI가 분석 중...' : 'AI analyzing...'}
+              </p>
+              <p className="text-gray-300 text-sm mt-1">
+                {language === 'ko' ? '잠시만 기다려주세요' : 'Please wait a moment'}
+              </p>
             </div>
           )}
         </div>
