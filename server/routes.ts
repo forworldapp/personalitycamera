@@ -63,7 +63,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const imageBase64 = req.file.buffer.toString('base64');
       const imageMimeType = req.file.mimetype;
 
-      // Call Gemini Vision API
+      // Call Gemini Vision API for age prediction
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       
       const prompt = `Please analyze this face image and predict the person's age. Also, describe how this person might look in 20 years. 
@@ -73,7 +73,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         "futureAge": number (current age + 20),
         "confidence": "high|medium|low",
         "analysis": "Brief description of facial features and aging prediction",
-        "futureDescription": "Description of how the person might look in 20 years"
+        "futureDescription": "Detailed description of how the person might look in 20 years including changes in skin, hair, facial structure"
       }`;
 
       const imagePart = {
@@ -115,6 +115,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         predictedAge: analysisData.predictedAge,
         futureAge: analysisData.futureAge,
         confidence: analysisData.confidence,
+        analysis: analysisData.analysis,
+        futureDescription: analysisData.futureDescription,
         geminiResponse: analysisData,
       });
 

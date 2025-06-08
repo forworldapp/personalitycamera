@@ -118,16 +118,92 @@ export default function ResultSection({ result, capturedImage, onRetake }: Resul
               <span className="text-purple-500">🔮</span>
             </div>
             <div className="text-center space-y-3">
-              <div className="w-24 h-24 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full mx-auto flex items-center justify-center">
-                <span className="text-purple-400 text-2xl">👤</span>
+              {/* Future Image Visualization */}
+              <div className="relative w-32 h-32 mx-auto">
+                {capturedImage ? (
+                  <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-purple-200">
+                    <img 
+                      src={capturedImage} 
+                      alt="Future prediction" 
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Aging overlay effects */}
+                    <div className="absolute inset-0 pointer-events-none">
+                      {/* Subtle aging overlay */}
+                      <svg className="w-full h-full" viewBox="0 0 128 128">
+                        {/* Wrinkle lines around eyes */}
+                        <path 
+                          d="M32 40 Q35 42 38 40 M32 44 Q35 46 38 44 M90 40 Q93 42 96 40 M90 44 Q93 46 96 44" 
+                          stroke="rgba(139, 69, 19, 0.3)" 
+                          strokeWidth="0.5" 
+                          fill="none"
+                        />
+                        {/* Mouth lines */}
+                        <path 
+                          d="M45 75 Q50 78 55 75 M73 75 Q78 78 83 75" 
+                          stroke="rgba(139, 69, 19, 0.2)" 
+                          strokeWidth="0.5" 
+                          fill="none"
+                        />
+                        {/* Forehead lines */}
+                        <path 
+                          d="M40 28 Q64 25 88 28 M42 32 Q64 29 86 32" 
+                          stroke="rgba(139, 69, 19, 0.2)" 
+                          strokeWidth="0.5" 
+                          fill="none"
+                        />
+                        {/* Gray hair effect */}
+                        <circle cx="45" cy="20" r="1" fill="rgba(192, 192, 192, 0.4)" />
+                        <circle cx="55" cy="18" r="1" fill="rgba(192, 192, 192, 0.4)" />
+                        <circle cx="65" cy="19" r="1" fill="rgba(192, 192, 192, 0.4)" />
+                        <circle cx="75" cy="21" r="1" fill="rgba(192, 192, 192, 0.4)" />
+                        <circle cx="83" cy="20" r="1" fill="rgba(192, 192, 192, 0.4)" />
+                      </svg>
+                    </div>
+                    {/* Age indicator badge */}
+                    <div className="absolute -bottom-2 -right-2 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      +20년
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-purple-200 to-pink-200 rounded-full flex items-center justify-center">
+                    <span className="text-purple-400 text-2xl">👤</span>
+                  </div>
+                )}
               </div>
+              
               <div>
                 <span className="text-2xl font-bold text-purple-600">{result.futureAge}세</span>
                 <p className="text-sm text-gray-600">예상 모습입니다</p>
               </div>
+              
               {result.futureDescription && (
-                <p className="text-sm text-gray-600 mt-2">{result.futureDescription}</p>
+                <div className="bg-white/50 rounded-lg p-3 mt-3">
+                  <p className="text-sm text-gray-700 leading-relaxed">{result.futureDescription}</p>
+                </div>
               )}
+              
+              {/* Aging indicators */}
+              <div className="grid grid-cols-3 gap-2 text-xs text-gray-600 mt-3">
+                <div className="text-center">
+                  <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
+                    👴
+                  </div>
+                  <span>피부 변화</span>
+                </div>
+                <div className="text-center">
+                  <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
+                    🎭
+                  </div>
+                  <span>주름 형성</span>
+                </div>
+                <div className="text-center">
+                  <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
+                    ⚪
+                  </div>
+                  <span>모발 변화</span>
+                </div>
+              </div>
             </div>
           </div>
 

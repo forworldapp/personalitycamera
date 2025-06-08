@@ -44,6 +44,9 @@ export const agePredictions = pgTable("age_predictions", {
   predictedAge: integer("predicted_age").notNull(),
   futureAge: integer("future_age"),
   confidence: varchar("confidence"),
+  analysis: text("analysis"),
+  futureDescription: text("future_description"),
+  futureImageUrl: varchar("future_image_url"), // For AI-generated future image
   geminiResponse: jsonb("gemini_response"),
   createdAt: timestamp("created_at").defaultNow(),
 });
