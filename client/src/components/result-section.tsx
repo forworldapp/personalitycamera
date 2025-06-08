@@ -111,98 +111,147 @@ export default function ResultSection({ result, capturedImage, onRetake }: Resul
             </div>
           </div>
 
-          {/* Future Prediction */}
+          {/* Before & After Comparison */}
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-medium text-gray-600">20년 후 예상 모습</span>
+              <span className="text-sm font-medium text-gray-600">현재 vs 20년 후</span>
               <span className="text-purple-500">🔮</span>
             </div>
-            <div className="text-center space-y-3">
-              {/* Future Image Visualization */}
-              <div className="relative w-32 h-32 mx-auto">
-                {capturedImage ? (
-                  <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-purple-200">
-                    <img 
-                      src={capturedImage} 
-                      alt="Future prediction" 
-                      className="w-full h-full object-cover"
-                    />
-                    {/* Aging overlay effects */}
-                    <div className="absolute inset-0 pointer-events-none">
-                      {/* Subtle aging overlay */}
-                      <svg className="w-full h-full" viewBox="0 0 128 128">
-                        {/* Wrinkle lines around eyes */}
-                        <path 
-                          d="M32 40 Q35 42 38 40 M32 44 Q35 46 38 44 M90 40 Q93 42 96 40 M90 44 Q93 46 96 44" 
-                          stroke="rgba(139, 69, 19, 0.3)" 
-                          strokeWidth="0.5" 
-                          fill="none"
-                        />
-                        {/* Mouth lines */}
-                        <path 
-                          d="M45 75 Q50 78 55 75 M73 75 Q78 78 83 75" 
-                          stroke="rgba(139, 69, 19, 0.2)" 
-                          strokeWidth="0.5" 
-                          fill="none"
-                        />
-                        {/* Forehead lines */}
-                        <path 
-                          d="M40 28 Q64 25 88 28 M42 32 Q64 29 86 32" 
-                          stroke="rgba(139, 69, 19, 0.2)" 
-                          strokeWidth="0.5" 
-                          fill="none"
-                        />
-                        {/* Gray hair effect */}
-                        <circle cx="45" cy="20" r="1" fill="rgba(192, 192, 192, 0.4)" />
-                        <circle cx="55" cy="18" r="1" fill="rgba(192, 192, 192, 0.4)" />
-                        <circle cx="65" cy="19" r="1" fill="rgba(192, 192, 192, 0.4)" />
-                        <circle cx="75" cy="21" r="1" fill="rgba(192, 192, 192, 0.4)" />
-                        <circle cx="83" cy="20" r="1" fill="rgba(192, 192, 192, 0.4)" />
-                      </svg>
+            <div className="flex justify-center space-x-4 mb-4">
+              {/* Current Image */}
+              <div className="text-center">
+                <div className="relative w-24 h-24">
+                  {capturedImage ? (
+                    <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-blue-200">
+                      <img 
+                        src={capturedImage} 
+                        alt="Current" 
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white text-xs font-bold px-1 py-0.5 rounded-full">
+                        현재
+                      </div>
                     </div>
-                    {/* Age indicator badge */}
-                    <div className="absolute -bottom-2 -right-2 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                      +20년
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-200 to-indigo-200 rounded-full flex items-center justify-center">
+                      <span className="text-blue-400 text-xl">👤</span>
                     </div>
-                  </div>
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-purple-200 to-pink-200 rounded-full flex items-center justify-center">
-                    <span className="text-purple-400 text-2xl">👤</span>
-                  </div>
-                )}
+                  )}
+                </div>
+                <p className="text-xs text-gray-600 mt-1">{result.predictedAge}세</p>
               </div>
-              
-              <div>
-                <span className="text-2xl font-bold text-purple-600">{result.futureAge}세</span>
-                <p className="text-sm text-gray-600">예상 모습입니다</p>
+
+              {/* Arrow */}
+              <div className="flex items-center">
+                <div className="text-2xl text-purple-400">→</div>
               </div>
-              
-              {result.futureDescription && (
-                <div className="bg-white/50 rounded-lg p-3 mt-3">
-                  <p className="text-sm text-gray-700 leading-relaxed">{result.futureDescription}</p>
+
+              {/* Future Image */}
+              <div className="text-center">
+                <div className="relative w-24 h-24">
+                  {capturedImage ? (
+                    <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-purple-200">
+                      <img 
+                        src={capturedImage} 
+                        alt="Future prediction" 
+                        className="w-full h-full object-cover"
+                      />
+                      {/* Aging overlay effects */}
+                      <div className="absolute inset-0 pointer-events-none">
+                        {/* Aging filter overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-yellow-100/30 mix-blend-overlay"></div>
+                        
+                        {/* More prominent aging overlay */}
+                        <svg className="w-full h-full" viewBox="0 0 128 128">
+                          {/* Pronounced wrinkle lines around eyes */}
+                          <path 
+                            d="M28 38 Q32 42 36 38 M28 42 Q32 46 36 42 M28 46 Q32 50 36 46 M92 38 Q96 42 100 38 M92 42 Q96 46 100 42 M92 46 Q96 50 100 46" 
+                            stroke="rgba(101, 67, 33, 0.7)" 
+                            strokeWidth="1" 
+                            fill="none"
+                          />
+                          {/* Forehead wrinkles */}
+                          <path 
+                            d="M35 25 Q64 22 93 25 M38 29 Q64 26 90 29 M40 33 Q64 30 88 33" 
+                            stroke="rgba(101, 67, 33, 0.6)" 
+                            strokeWidth="1" 
+                            fill="none"
+                          />
+                          {/* Mouth and chin lines */}
+                          <path 
+                            d="M40 72 Q50 78 60 72 Q70 78 88 72 M45 85 Q55 88 65 85 Q75 88 83 85" 
+                            stroke="rgba(101, 67, 33, 0.5)" 
+                            strokeWidth="1" 
+                            fill="none"
+                          />
+                          {/* Neck lines */}
+                          <path 
+                            d="M45 105 Q64 102 83 105 M47 110 Q64 107 81 110" 
+                            stroke="rgba(101, 67, 33, 0.4)" 
+                            strokeWidth="0.8" 
+                            fill="none"
+                          />
+                          {/* Gray hair patches */}
+                          <circle cx="40" cy="18" r="3" fill="rgba(220, 220, 220, 0.8)" />
+                          <circle cx="50" cy="15" r="2.5" fill="rgba(200, 200, 200, 0.7)" />
+                          <circle cx="60" cy="16" r="3" fill="rgba(210, 210, 210, 0.8)" />
+                          <circle cx="70" cy="17" r="2" fill="rgba(190, 190, 190, 0.6)" />
+                          <circle cx="80" cy="19" r="2.5" fill="rgba(215, 215, 215, 0.7)" />
+                          <circle cx="88" cy="20" r="2" fill="rgba(205, 205, 205, 0.6)" />
+                          {/* Age spots */}
+                          <circle cx="35" cy="55" r="1.5" fill="rgba(139, 119, 101, 0.6)" />
+                          <circle cx="90" cy="60" r="1" fill="rgba(139, 119, 101, 0.5)" />
+                          <circle cx="70" cy="45" r="1" fill="rgba(139, 119, 101, 0.4)" />
+                          {/* Skin texture overlay */}
+                          <rect x="0" y="0" width="128" height="128" fill="url(#aging-texture)" opacity="0.15"/>
+                          <defs>
+                            <pattern id="aging-texture" patternUnits="userSpaceOnUse" width="4" height="4">
+                              <circle cx="2" cy="2" r="0.5" fill="rgba(101, 67, 33, 0.3)"/>
+                            </pattern>
+                          </defs>
+                        </svg>
+                      </div>
+                      {/* Age indicator badge */}
+                      <div className="absolute -bottom-1 -right-1 bg-purple-500 text-white text-xs font-bold px-1 py-0.5 rounded-full">
+                        +20년
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-purple-200 to-pink-200 rounded-full flex items-center justify-center">
+                      <span className="text-purple-400 text-xl">👤</span>
+                    </div>
+                  )}
                 </div>
-              )}
-              
-              {/* Aging indicators */}
-              <div className="grid grid-cols-3 gap-2 text-xs text-gray-600 mt-3">
-                <div className="text-center">
-                  <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
-                    👴
-                  </div>
-                  <span>피부 변화</span>
+                <p className="text-xs text-gray-600 mt-1">{result.futureAge}세</p>
+              </div>
+            </div>
+            
+            {/* Description */}
+            {result.futureDescription && (
+              <div className="bg-white/50 rounded-lg p-3 mb-3">
+                <p className="text-sm text-gray-700 leading-relaxed">{result.futureDescription}</p>
+              </div>
+            )}
+            
+            {/* Aging indicators */}
+            <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
+              <div className="text-center">
+                <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
+                  👴
                 </div>
-                <div className="text-center">
-                  <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
-                    🎭
-                  </div>
-                  <span>주름 형성</span>
+                <span>피부 변화</span>
+              </div>
+              <div className="text-center">
+                <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
+                  🎭
                 </div>
-                <div className="text-center">
-                  <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
-                    ⚪
-                  </div>
-                  <span>모발 변화</span>
+                <span>주름 형성</span>
+              </div>
+              <div className="text-center">
+                <div className="w-6 h-6 bg-gray-200 rounded-full mx-auto mb-1 flex items-center justify-center">
+                  ⚪
                 </div>
+                <span>모발 변화</span>
               </div>
             </div>
           </div>
