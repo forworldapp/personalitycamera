@@ -80,22 +80,33 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
 
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: 'user',
-          width: { ideal: 720 },
-          height: { ideal: 1280 }
-        },
+      // Use simple constraints to avoid studio mode
+      const constraints = {
+        video: true,
         audio: false
-      });
+      };
+
+      console.log('Requesting basic camera access');
+      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
       
+      console.log('Camera stream obtained successfully');
       setStream(mediaStream);
       setCameraActive(true);
       setCapturedImage(null);
       
+      // Set video source and ensure it plays
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
-        videoRef.current.play();
+        videoRef.current.autoplay = true;
+        videoRef.current.playsInline = true;
+        videoRef.current.muted = true;
+        
+        // Force play after a small delay
+        setTimeout(() => {
+          if (videoRef.current) {
+            videoRef.current.play().catch(console.error);
+          }
+        }, 100);
       }
     } catch (error) {
       console.error('카메라 접근 실패:', error);
