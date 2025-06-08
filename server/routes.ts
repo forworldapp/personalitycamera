@@ -48,7 +48,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       
+      console.log('POST /api/predict-age - Request received');
+      console.log('Headers:', req.headers);
+      console.log('Content-Type:', req.get('Content-Type'));
+      console.log('File:', req.file);
+      console.log('Body keys:', Object.keys(req.body));
+      
       if (!req.file) {
+        console.log('No file found in request');
         return res.status(400).json({ message: "No image file provided" });
       }
 

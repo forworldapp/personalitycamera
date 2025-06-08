@@ -28,8 +28,16 @@ export default function CameraSection() {
 
   const analyzeImageMutation = useMutation({
     mutationFn: async (imageFile: File) => {
+      console.log('Starting image analysis with file:', imageFile.name, imageFile.size, imageFile.type);
+      
       const formData = new FormData();
       formData.append('image', imageFile);
+      
+      // Log FormData contents
+      console.log('FormData entries:');
+      Array.from(formData.entries()).forEach(([key, value]) => {
+        console.log(key, value);
+      });
       
       const response = await apiRequest('POST', '/api/predict-age', formData);
       return response.json();
@@ -100,28 +108,65 @@ export default function CameraSection() {
     try {
       // Create canvas to capture frame
       const video = document.querySelector('video') as HTMLVideoElement;
-      if (!video) return;
+      if (!video) {
+        toast({
+          title: "촬영 실패",
+          description: "비디오 요소를 찾을 수 없습니다.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       
       const context = canvas.getContext('2d');
-      if (!context) return;
+      if (!context) {
+        toast({
+          title: "촬영 실패",
+          description: "Canvas 컨텍스트를 생성할 수 없습니다.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       context.drawImage(video, 0, 0);
       
-      // Convert to blob
-      canvas.toBlob(async (blob) => {
-        if (!blob) return;
-        
-        const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
-        setCapturedImage(canvas.toDataURL('image/jpeg'));
-        stopCamera();
-        
-        // Analyze the image
-        analyzeImageMutation.mutate(file);
-      }, 'image/jpeg', 0.8);
+      // Convert to blob and file
+      return new Promise<void>((resolve, reject) => {
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            toast({
+              title: "촬영 실패",
+              description: "이미지 생성에 실패했습니다.",
+              variant: "destructive",
+            });
+            reject(new Error('Failed to create blob'));
+            return;
+          }
+          
+          try {
+            const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+            console.log('Created file:', file.name, file.size, file.type);
+            
+            setCapturedImage(canvas.toDataURL('image/jpeg'));
+            stopCamera();
+            
+            // Analyze the image
+            analyzeImageMutation.mutate(file);
+            resolve();
+          } catch (error) {
+            console.error('File creation error:', error);
+            toast({
+              title: "촬영 실패",
+              description: "파일 생성 중 오류가 발생했습니다.",
+              variant: "destructive",
+            });
+            reject(error);
+          }
+        }, 'image/jpeg', 0.9);
+      });
       
     } catch (error) {
       console.error('Capture error:', error);
