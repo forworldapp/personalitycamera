@@ -201,21 +201,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get specific analysis
   app.get('/api/analyses/:id', isAuthenticated, async (req: any, res) => {
     try {
-      const prediction = await storage.getAgePrediction(req.params.id);
+      const analysis = await storage.getPersonalityAnalysis(req.params.id);
       
-      if (!prediction) {
+      if (!analysis) {
         return res.status(404).json({ message: "Prediction not found" });
       }
 
-      // Check if the prediction belongs to the current user
-      if (prediction.userId !== req.user.claims.sub) {
+      // Check if the analysis belongs to the current user
+      if (analysis.userId !== req.user.claims.sub) {
         return res.status(403).json({ message: "Access denied" });
       }
 
-      res.json(prediction);
+      res.json(analysis);
     } catch (error) {
-      console.error("Error fetching prediction:", error);
-      res.status(500).json({ message: "Failed to fetch prediction" });
+      console.error("Error fetching analysis:", error);
+      res.status(500).json({ message: "Failed to fetch analysis" });
     }
   });
 
