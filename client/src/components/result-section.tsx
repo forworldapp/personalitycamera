@@ -156,57 +156,46 @@ export default function ResultSection({ result, capturedImage, onRetake }: Resul
                         alt="Future prediction" 
                         className="w-full h-full object-cover"
                       />
-                      {/* Aging overlay effects */}
+                      {/* Subtle aging overlay effects */}
                       <div className="absolute inset-0 pointer-events-none">
-                        {/* Aging filter overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-yellow-100/30 mix-blend-overlay"></div>
+                        {/* Gentle aging filter */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-amber-50/20 mix-blend-soft-light"></div>
                         
-                        {/* More prominent aging overlay */}
+                        {/* Realistic aging overlay */}
                         <svg className="w-full h-full" viewBox="0 0 128 128">
-                          {/* Pronounced wrinkle lines around eyes */}
+                          {/* Subtle wrinkle lines around eyes */}
                           <path 
-                            d="M28 38 Q32 42 36 38 M28 42 Q32 46 36 42 M28 46 Q32 50 36 46 M92 38 Q96 42 100 38 M92 42 Q96 46 100 42 M92 46 Q96 50 100 46" 
-                            stroke="rgba(101, 67, 33, 0.7)" 
-                            strokeWidth="1" 
+                            d="M30 42 Q32 44 34 42 M94 42 Q96 44 98 42" 
+                            stroke="rgba(139, 119, 101, 0.3)" 
+                            strokeWidth="0.3" 
                             fill="none"
                           />
-                          {/* Forehead wrinkles */}
+                          {/* Light forehead lines */}
                           <path 
-                            d="M35 25 Q64 22 93 25 M38 29 Q64 26 90 29 M40 33 Q64 30 88 33" 
-                            stroke="rgba(101, 67, 33, 0.6)" 
-                            strokeWidth="1" 
+                            d="M40 30 Q64 28 88 30" 
+                            stroke="rgba(139, 119, 101, 0.25)" 
+                            strokeWidth="0.3" 
                             fill="none"
                           />
-                          {/* Mouth and chin lines */}
+                          {/* Slight smile lines */}
                           <path 
-                            d="M40 72 Q50 78 60 72 Q70 78 88 72 M45 85 Q55 88 65 85 Q75 88 83 85" 
-                            stroke="rgba(101, 67, 33, 0.5)" 
-                            strokeWidth="1" 
+                            d="M42 75 Q48 78 52 75 M76 75 Q82 78 86 75" 
+                            stroke="rgba(139, 119, 101, 0.2)" 
+                            strokeWidth="0.3" 
                             fill="none"
                           />
-                          {/* Neck lines */}
-                          <path 
-                            d="M45 105 Q64 102 83 105 M47 110 Q64 107 81 110" 
-                            stroke="rgba(101, 67, 33, 0.4)" 
-                            strokeWidth="0.8" 
-                            fill="none"
-                          />
-                          {/* Gray hair patches */}
-                          <circle cx="40" cy="18" r="3" fill="rgba(220, 220, 220, 0.8)" />
-                          <circle cx="50" cy="15" r="2.5" fill="rgba(200, 200, 200, 0.7)" />
-                          <circle cx="60" cy="16" r="3" fill="rgba(210, 210, 210, 0.8)" />
-                          <circle cx="70" cy="17" r="2" fill="rgba(190, 190, 190, 0.6)" />
-                          <circle cx="80" cy="19" r="2.5" fill="rgba(215, 215, 215, 0.7)" />
-                          <circle cx="88" cy="20" r="2" fill="rgba(205, 205, 205, 0.6)" />
-                          {/* Age spots */}
-                          <circle cx="35" cy="55" r="1.5" fill="rgba(139, 119, 101, 0.6)" />
-                          <circle cx="90" cy="60" r="1" fill="rgba(139, 119, 101, 0.5)" />
-                          <circle cx="70" cy="45" r="1" fill="rgba(139, 119, 101, 0.4)" />
-                          {/* Skin texture overlay */}
-                          <rect x="0" y="0" width="128" height="128" fill="url(#aging-texture)" opacity="0.15"/>
+                          {/* Gray hair spots (more subtle) */}
+                          <circle cx="45" cy="20" r="1.5" fill="rgba(200, 200, 200, 0.4)" />
+                          <circle cx="60" cy="18" r="2" fill="rgba(210, 210, 210, 0.4)" />
+                          <circle cx="75" cy="21" r="1.5" fill="rgba(190, 190, 190, 0.3)" />
+                          {/* Very subtle age spots */}
+                          <circle cx="40" cy="60" r="0.8" fill="rgba(160, 140, 120, 0.3)" />
+                          <circle cx="85" cy="65" r="0.6" fill="rgba(160, 140, 120, 0.25)" />
+                          {/* Maturity overlay instead of heavy aging */}
+                          <rect x="0" y="0" width="128" height="128" fill="url(#maturity-filter)" opacity="0.08"/>
                           <defs>
-                            <pattern id="aging-texture" patternUnits="userSpaceOnUse" width="4" height="4">
-                              <circle cx="2" cy="2" r="0.5" fill="rgba(101, 67, 33, 0.3)"/>
+                            <pattern id="maturity-filter" patternUnits="userSpaceOnUse" width="8" height="8">
+                              <circle cx="4" cy="4" r="0.3" fill="rgba(139, 119, 101, 0.2)"/>
                             </pattern>
                           </defs>
                         </svg>
