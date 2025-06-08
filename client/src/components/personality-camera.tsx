@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Camera, StopCircle, RotateCcw } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import CameraViewport from "./camera-viewport";
 
 interface PersonalityResult {
   id: string;
@@ -80,38 +81,18 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
 
   const startCamera = async () => {
     try {
-      // Use simple constraints to avoid studio mode
-      const constraints = {
-        video: true,
-        audio: false
-      };
-
-      console.log('Requesting basic camera access');
-      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-      
-      console.log('Camera stream obtained successfully');
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'user'
+        }
+      });
       setStream(mediaStream);
       setCameraActive(true);
       setCapturedImage(null);
-      
-      // Set video source and ensure it plays
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        videoRef.current.autoplay = true;
-        videoRef.current.playsInline = true;
-        videoRef.current.muted = true;
-        
-        // Force play after a small delay
-        setTimeout(() => {
-          if (videoRef.current) {
-            videoRef.current.play().catch(console.error);
-          }
-        }, 100);
-      }
     } catch (error) {
-      console.error('카메라 접근 실패:', error);
+      console.error('Camera access error:', error);
       toast({
-        title: "카메라 오류",
+        title: "카메라 접근 실패",
         description: "카메라에 접근할 수 없습니다. 브라우저 설정을 확인해주세요.",
         variant: "destructive",
       });
@@ -126,32 +107,80 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
     }
   };
 
-  const capturePhoto = () => {
-    if (!videoRef.current || !canvasRef.current) return;
+  const capturePhoto = async () => {
+    if (!stream) return;
 
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-
-    if (!context) return;
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0);
-
-    const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
-    setCapturedImage(imageDataUrl);
-
-    // Convert to file for upload and analyze immediately
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
-        analyzePersonality.mutate(file);
+    try {
+      // Create canvas to capture frame using the same logic as working camera
+      const video = document.querySelector('video') as HTMLVideoElement;
+      if (!video) {
+        toast({
+          title: "촬영 실패",
+          description: "비디오 요소를 찾을 수 없습니다.",
+          variant: "destructive",
+        });
+        return;
       }
-    }, 'image/jpeg', 0.8);
 
-    // Keep camera running, don't stop it
-    // stopCamera();
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      const context = canvas.getContext('2d');
+      if (!context) {
+        toast({
+          title: "촬영 실패",
+          description: "Canvas 컨텍스트를 생성할 수 없습니다.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      context.drawImage(video, 0, 0);
+      
+      // Convert to blob and file
+      return new Promise<void>((resolve, reject) => {
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            toast({
+              title: "촬영 실패",
+              description: "이미지 생성에 실패했습니다.",
+              variant: "destructive",
+            });
+            reject(new Error('Failed to create blob'));
+            return;
+          }
+          
+          try {
+            const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+            console.log('Created file:', file.name, file.size, file.type);
+            
+            setCapturedImage(canvas.toDataURL('image/jpeg'));
+            stopCamera();
+            
+            // Analyze the image
+            analyzePersonality.mutate(file);
+            resolve();
+          } catch (error) {
+            console.error('File creation error:', error);
+            toast({
+              title: "촬영 실패",
+              description: "파일 생성 중 오류가 발생했습니다.",
+              variant: "destructive",
+            });
+            reject(error);
+          }
+        }, 'image/jpeg', 0.9);
+      });
+      
+    } catch (error) {
+      console.error('Capture error:', error);
+      toast({
+        title: "촬영 실패",
+        description: "사진 촬영 중 오류가 발생했습니다.",
+        variant: "destructive",
+      });
+    }
   };
 
   const retakePhoto = () => {
@@ -200,51 +229,11 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
           <span className="text-purple-500">🧠</span>
         </div>
 
-        <div className="relative bg-black rounded-3xl overflow-hidden shadow-2xl mx-4" style={{ aspectRatio: '3/4' }}>
-          {cameraActive && stream ? (
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-gradient-to-b from-gray-800 to-gray-900">
-              <div className="w-20 h-20 border-4 border-dashed border-gray-400 rounded-full flex items-center justify-center mb-4">
-                <span className="text-3xl text-gray-400">📷</span>
-              </div>
-              <p className="text-gray-300 text-center px-6">
-                {language === 'ko' ? '카메라를 시작하여\n얼굴을 촬영해주세요' : 'Start camera to\ncapture your face'}
-              </p>
-            </div>
-          )}
-
-          {/* Face Detection Overlay */}
-          {cameraActive && !analyzePersonality.isPending && (
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-56 border-2 border-purple-400/60 rounded-2xl transition-opacity duration-300">
-                <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-purple-400 rounded-tl-lg"></div>
-                <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-purple-400 rounded-tr-lg"></div>
-                <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-purple-400 rounded-bl-lg"></div>
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-purple-400 rounded-br-lg"></div>
-              </div>
-            </div>
-          )}
-
-          {/* Loading Overlay */}
-          {analyzePersonality.isPending && (
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center transition-opacity duration-300">
-              <div className="w-16 h-16 border-4 border-purple-400 border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-white font-medium">
-                {language === 'ko' ? 'AI가 분석 중...' : 'AI analyzing...'}
-              </p>
-              <p className="text-gray-300 text-sm mt-1">
-                {language === 'ko' ? '잠시만 기다려주세요' : 'Please wait a moment'}
-              </p>
-            </div>
-          )}
-        </div>
+        <CameraViewport 
+          stream={stream} 
+          cameraActive={cameraActive} 
+          isAnalyzing={analyzePersonality.isPending} 
+        />
 
         <canvas ref={canvasRef} className="hidden" />
 
