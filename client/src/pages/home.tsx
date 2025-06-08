@@ -34,6 +34,8 @@ export default function Home() {
   const [currentResult, setCurrentResult] = useState<PersonalityResult | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [language, setLanguage] = useState<'ko' | 'en'>('ko');
+  
+  const adManager = useAdManager();
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -50,9 +52,23 @@ export default function Home() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
+  useEffect(() => {
+    adManager.resetDailyCount();
+  }, []);
+
   const handleAnalysisComplete = (result: PersonalityResult, image: string) => {
     setCurrentResult(result);
     setCapturedImage(image);
+    adManager.incrementAnalysisCount();
+    adManager.showInterstitialAd();
+  };
+
+  const handleCameraStart = () => {
+    if (!adManager.canAnalyze) {
+      adManager.showRewardedAdOffer();
+      return false;
+    }
+    return true;
   };
 
   const handleRetake = () => {
@@ -88,7 +104,26 @@ export default function Home() {
             <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
               <span className="text-white text-sm font-bold">🧠</span>
             </div>
-            <h1 className="text-lg font-semibold text-gray-900">Personality AI</h1>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">Personality AI</h1>
+              <div className="flex items-center space-x-2 text-xs">
+                <span className="text-gray-500">일일 분석:</span>
+                <span className="font-medium text-purple-600">
+                  {adManager.analysisCount}/{adManager.maxAnalysis}
+                </span>
+                {!adManager.canAnalyze && (
+                  <Button
+                    onClick={adManager.showRewardedAdOffer}
+                    size="sm"
+                    variant="ghost"
+                    className="text-xs px-2 py-1 h-auto"
+                  >
+                    <Zap className="w-3 h-3 mr-1" />
+                    추가
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
           
           <div className="flex items-center space-x-3">
@@ -136,6 +171,11 @@ export default function Home() {
             
             <PersonalityCamera onAnalysisComplete={handleAnalysisComplete} />
 
+            {/* Top Banner Ad */}
+            <div className="flex justify-center my-4">
+              <BannerAd size="medium" position="inline" className="mx-auto" />
+            </div>
+
             {/* Info Section */}
             <section className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 space-y-4">
               <div className="text-center">
@@ -181,7 +221,26 @@ export default function Home() {
             onLanguageChange={setLanguage}
           />
         )}
+
+        {/* Bottom Banner Ad */}
+        <div className="flex justify-center mt-6 pb-4">
+          <BannerAd size="medium" position="bottom" className="mx-auto" />
+        </div>
       </main>
+
+      {/* Ad Modals */}
+      <InterstitialAd 
+        isVisible={adManager.showInterstitial}
+        onClose={adManager.hideInterstitial}
+        onAdCompleted={adManager.hideInterstitial}
+      />
+
+      <RewardedAd 
+        isVisible={adManager.showRewardedAd}
+        onClose={adManager.hideRewardedAd}
+        onRewardEarned={adManager.earnReward}
+        rewardText="무료 분석 1회 추가"
+      />
     </div>
   );
 }
