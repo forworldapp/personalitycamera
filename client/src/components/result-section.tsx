@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { createAgedImage } from "@/lib/imageProcessing";
+import { useState, useEffect } from "react";
 
 interface AnalysisResult {
   id: string;
@@ -20,6 +22,13 @@ interface ResultSectionProps {
 
 export default function ResultSection({ result, capturedImage, onRetake }: ResultSectionProps) {
   const { toast } = useToast();
+  const [agedImage, setAgedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (capturedImage) {
+      createAgedImage(capturedImage).then(setAgedImage);
+    }
+  }, [capturedImage]);
 
   const shareResult = async () => {
     if (navigator.share) {
@@ -152,68 +161,23 @@ export default function ResultSection({ result, capturedImage, onRetake }: Resul
                   20년 후 예상 모습 ({result.futureAge}세)
                 </h4>
                 <div className="relative w-48 h-48 mx-auto rounded-2xl overflow-hidden border-3 border-purple-200 shadow-lg">
-                  {capturedImage ? (
+                  {agedImage ? (
                     <div className="relative w-full h-full">
                       <img 
-                        src={capturedImage} 
+                        src={agedImage} 
                         alt="Future prediction" 
                         className="w-full h-full object-cover"
                       />
-                      {/* More dramatic aging effects */}
-                      <div className="absolute inset-0 pointer-events-none">
-                        {/* Aging color filter */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-yellow-100/20 via-amber-100/15 to-orange-100/25 mix-blend-multiply"></div>
-                        
-                        {/* Skin tone adjustment */}
-                        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-yellow-200/15 mix-blend-soft-light"></div>
-                        
-                        {/* Dramatic aging overlay */}
-                        <svg className="w-full h-full" viewBox="0 0 192 192">
-                          {/* Eye wrinkles */}
-                          <path 
-                            d="M45 60 Q50 65 55 60 M45 65 Q50 70 55 65 M45 70 Q50 75 55 70 M137 60 Q142 65 147 60 M137 65 Q142 70 147 65 M137 70 Q142 75 147 70" 
-                            stroke="rgba(101, 67, 33, 0.6)" 
-                            strokeWidth="1.5" 
-                            fill="none"
-                          />
-                          {/* Forehead wrinkles */}
-                          <path 
-                            d="M55 40 Q96 35 137 40 M58 45 Q96 40 134 45 M60 50 Q96 45 132 50" 
-                            stroke="rgba(101, 67, 33, 0.5)" 
-                            strokeWidth="1.2" 
-                            fill="none"
-                          />
-                          {/* Smile lines and mouth area */}
-                          <path 
-                            d="M60 110 Q75 120 90 110 Q105 120 132 110 M65 125 Q80 130 95 125 Q110 130 127 125" 
-                            stroke="rgba(101, 67, 33, 0.45)" 
-                            strokeWidth="1" 
-                            fill="none"
-                          />
-                          {/* Neck wrinkles */}
-                          <path 
-                            d="M70 160 Q96 155 122 160 M72 170 Q96 165 120 170 M74 180 Q96 175 118 180" 
-                            stroke="rgba(101, 67, 33, 0.4)" 
-                            strokeWidth="1" 
-                            fill="none"
-                          />
-                          {/* Gray hair areas */}
-                          <circle cx="65" cy="30" r="6" fill="rgba(210, 210, 210, 0.7)" />
-                          <circle cx="80" cy="25" r="5" fill="rgba(200, 200, 200, 0.6)" />
-                          <circle cx="95" cy="28" r="7" fill="rgba(220, 220, 220, 0.7)" />
-                          <circle cx="110" cy="26" r="5" fill="rgba(190, 190, 190, 0.6)" />
-                          <circle cx="125" cy="32" r="6" fill="rgba(215, 215, 215, 0.7)" />
-                          {/* Age spots */}
-                          <circle cx="70" cy="85" r="2" fill="rgba(139, 119, 101, 0.5)" />
-                          <circle cx="125" cy="90" r="1.5" fill="rgba(139, 119, 101, 0.4)" />
-                          <circle cx="105" cy="75" r="1.5" fill="rgba(139, 119, 101, 0.45)" />
-                          <circle cx="85" cy="95" r="1" fill="rgba(139, 119, 101, 0.35)" />
-                        </svg>
-                        
-                        {/* Age badge */}
-                        <div className="absolute top-2 right-2 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                          +20년
-                        </div>
+                      {/* Age badge */}
+                      <div className="absolute top-2 right-2 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        +20년
+                      </div>
+                    </div>
+                  ) : capturedImage ? (
+                    <div className="relative w-full h-full flex items-center justify-center bg-purple-100">
+                      <div className="text-center">
+                        <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                        <p className="text-purple-600 text-sm">노화 효과 적용 중...</p>
                       </div>
                     </div>
                   ) : (
