@@ -3,6 +3,12 @@ import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import PersonalityCamera from "@/components/personality-camera";
 import PersonalityResult from "@/components/personality-result";
+import BannerAd from "@/components/ads/banner-ad";
+import InterstitialAd from "@/components/ads/interstitial-ad";
+import RewardedAd from "@/components/ads/rewarded-ad";
+import { useAdManager } from "@/hooks/useAdManager";
+import { Button } from "@/components/ui/button";
+import { Zap, BarChart3 } from "lucide-react";
 
 interface PersonalityResult {
   id: string;
