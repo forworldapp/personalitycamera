@@ -5,23 +5,36 @@ const config: CapacitorConfig = {
   appName: 'Personality AI',
   webDir: 'dist/public',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    iosScheme: 'capacitor'
   },
   plugins: {
     App: {
       launchShowDuration: 2000
     },
     StatusBar: {
-      style: 'DEFAULT',
-      backgroundColor: '#8b5cf6'
+      style: 'LIGHT_CONTENT',
+      backgroundColor: '#8b5cf6',
+      overlaysWebView: false
     },
     Keyboard: {
-      resize: 'body'
+      resize: 'ionic'
+    },
+    Camera: {
+      iosPermissions: {
+        cameraDescription: "얼굴 분석을 위해 카메라 접근 권한이 필요합니다."
+      }
     }
   },
   android: {
     allowMixedContent: true,
     captureInput: true
+  },
+  ios: {
+    scheme: 'PersonalityAI',
+    contentInset: 'automatic',
+    scrollEnabled: true,
+    backgroundColor: '#8b5cf6'
   }
 };
 
