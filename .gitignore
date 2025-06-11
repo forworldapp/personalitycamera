@@ -1,10 +1,13 @@
 # Dependencies
 node_modules/
-package-lock.json
+.pnpm-store/
 
 # Build outputs
 dist/
 build/
+.next/
+.nuxt/
+.vuepress/dist/
 
 # Environment variables
 .env
@@ -13,12 +16,18 @@ build/
 .env.test.local
 .env.production.local
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
 
 # Runtime data
 pids
@@ -26,18 +35,15 @@ pids
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
+# Coverage directory
 coverage/
 *.lcov
-
-# nyc test coverage
 .nyc_output
 
 # Dependency directories
-node_modules/
 jspm_packages/
 
-# Optional npm cache directory
+# Optional npm cache
 .npm
 
 # Optional REPL history
@@ -49,21 +55,12 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
-# parcel-bundler cache (https://parceljs.org/)
+# parcel-bundler cache
 .cache
 .parcel-cache
 
-# next.js build output
-.next
-
-# nuxt.js build output
-.nuxt
-
-# vuepress build output
-.vuepress/dist
-
 # Serverless directories
-.serverless
+.serverless/
 
 # FuseBox cache
 .fusebox/
@@ -74,7 +71,7 @@ jspm_packages/
 # TernJS port file
 .tern-port
 
-# Stores VSCode versions used for testing VSCode extensions
+# Stores VSCode versions
 .vscode-test
 
 # OS generated files
@@ -89,4 +86,20 @@ Thumbs.db
 # Replit specific
 .replit
 .upm
+.breakpoints
 replit.nix
+
+# Build artifacts
+android/app/build/
+ios/App/build/
+capacitor.config.ts.backup
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
