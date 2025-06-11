@@ -1,361 +1,379 @@
-# iOS App Store 출시 가이드
+# iOS App Store 출시 완전 가이드
 
-## 1. Apple 개발자 계정 준비
+## 사전 준비사항
 
-### A. Apple Developer Program 등록
-- **비용**: $99/년 (개인) 또는 $299/년 (기업)
-- **등록 절차**: 
-  1. Apple ID 생성
-  2. Apple Developer 사이트에서 등록
-  3. 신원 확인 (최대 48시간 소요)
-  4. 결제 완료
+### Apple Developer 계정
+- **등록비**: $99/년
+- **계정 유형**: Individual Developer Account
+- **필수 정보**: 신용카드, 정부 발급 ID, 전화번호
 
-### B. 개발 환경 요구사항
-- **macOS**: macOS 13.0 이상
+### 개발 환경
+- **macOS**: 최신 버전 권장
 - **Xcode**: 15.0 이상
-- **iOS Deployment Target**: iOS 13.0 이상
-- **Apple Silicon Mac 권장** (빌드 속도 향상)
+- **iOS Deployment Target**: 14.0 이상
 
-## 2. iOS 프로젝트 설정
+## 앱 빌드 및 아카이브
 
-### A. Capacitor iOS 설정 업데이트
-```typescript
-// capacitor.config.ts
-const config: CapacitorConfig = {
-  appId: 'com.personalityai.app',
-  appName: 'Personality AI',
-  webDir: 'dist/public',
-  ios: {
-    scheme: 'PersonalityAI',
-    contentInset: 'automatic',
-    scrollEnabled: true,
-    backgroundColor: '#8b5cf6'
-  },
-  plugins: {
-    StatusBar: {
-      style: 'LIGHT_CONTENT',
-      backgroundColor: '#8b5cf6',
-      overlaysWebView: false
-    },
-    Keyboard: {
-      resize: 'ionic'
-    },
-    Camera: {
-      iosPermissions: {
-        cameraDescription: "얼굴 분석을 위해 카메라 접근 권한이 필요합니다."
-      }
-    }
-  }
-};
-```
-
-### B. Info.plist 권한 설정
-```xml
-<!-- ios/App/App/Info.plist -->
-<key>NSCameraUsageDescription</key>
-<string>얼굴 분석을 위해 카메라 접근 권한이 필요합니다.</string>
-
-<key>NSPhotoLibraryUsageDescription</key>
-<string>사진을 선택하여 성격 분석을 받을 수 있습니다.</string>
-
-<key>CFBundleDisplayName</key>
-<string>Personality AI</string>
-
-<key>CFBundleShortVersionString</key>
-<string>1.0.0</string>
-
-<key>CFBundleVersion</key>
-<string>1</string>
-```
-
-## 3. App Store Connect 설정
-
-### A. 앱 정보 등록
-```
-앱 이름: Personality AI
-부제목: 얼굴로 보는 성격 분석
-SKU: PERSONALITY-AI-001
-번들 ID: com.personalityai.app
-기본 언어: 한국어
-카테고리: 엔터테인먼트
-하위 카테고리: 기타
-```
-
-### B. 앱 설명 (한국어)
-```
-🧠 AI가 당신의 얼굴을 분석하여 성격과 MBTI 유형을 예측합니다!
-
-✨ 주요 기능
-• Google AI 기반 정확한 얼굴 분석
-• MBTI 16가지 유형 예측
-• Big Five 성격 특성 분석
-• 한국어/영어 결과 제공
-• 간편한 카메라 촬영
-
-🎯 완벽한 선택
-• 자신의 성격 유형이 궁금한 분
-• MBTI 테스트에 관심 있는 분
-• 재미있는 AI 분석을 경험하고 싶은 분
-
-⚡ 특별 혜택
-• 무료로 하루 3회 분석 가능
-• 광고 시청으로 추가 분석 기회
-• 즉시 결과 확인
-
-※ 분석 결과는 참고용이며 실제와 다를 수 있습니다.
-개인정보는 분석 완료 즉시 안전하게 삭제됩니다.
-```
-
-### C. 영어 설명
-```
-🧠 AI analyzes your face to predict personality and MBTI type!
-
-✨ Key Features
-• Accurate facial analysis powered by Google AI
-• Predicts all 16 MBTI personality types
-• Big Five personality traits analysis
-• Results available in Korean/English
-• Easy camera capture interface
-
-🎯 Perfect For
-• Those curious about their personality type
-• MBTI test enthusiasts
-• Anyone wanting to try AI-powered analysis
-• Self-discovery and personal growth
-
-⚡ Special Benefits
-• 3 free analyses per day
-• Watch ads for additional opportunities
-• Instant results delivery
-• Secure data handling
-
-※ Results are for reference and may differ from reality.
-Personal data is securely deleted immediately after analysis.
-```
-
-## 4. iOS 스크린샷 요구사항
-
-### A. 필수 스크린샷 크기
-- **6.7" Display (iPhone 14 Pro Max)**: 1290 x 2796 pixels
-- **6.5" Display (iPhone 11 Pro Max)**: 1242 x 2688 pixels
-- **5.5" Display (iPhone 8 Plus)**: 1242 x 2208 pixels
-
-### B. 권장 스크린샷 순서
-1. **메인 화면**: 카메라 준비 상태
-2. **얼굴 감지**: 촬영 가이드라인 표시
-3. **분석 진행**: AI 분석 중 화면
-4. **MBTI 결과**: 성격 유형 결과
-5. **상세 분석**: Big Five 특성 그래프
-6. **언어 선택**: 한영 전환 기능
-7. **기록 보기**: 분석 히스토리
-8. **광고 화면**: 추가 분석 기회
-
-## 5. 앱 아이콘 및 에셋
-
-### A. 앱 아이콘 크기 (iOS)
-```
-1024 x 1024 (App Store)
-180 x 180 (iPhone @3x)
-120 x 120 (iPhone @2x)
-167 x 167 (iPad Pro @2x)
-152 x 152 (iPad @2x)
-76 x 76 (iPad @1x)
-```
-
-### B. 스플래시 스크린
-```xml
-<!-- ios/App/App/Assets.xcassets/Splash.imageset/ -->
-splash-1x.png (1x) - 1024 x 1024
-splash-2x.png (2x) - 2048 x 2048
-splash-3x.png (3x) - 3072 x 3072
-```
-
-## 6. 프라이버시 및 데이터 사용
-
-### A. 앱 개인정보 보고서
-```
-데이터 수집:
-- 연락처 정보: 이메일 (계정 관리)
-- 사용자 콘텐츠: 사진 (분석 목적, 즉시 삭제)
-- 사용 데이터: 앱 사용 통계
-
-데이터 용도:
-- 앱 기능: 성격 분석 서비스 제공
-- 분석: 서비스 개선 및 성능 측정
-- 개발자 광고: 맞춤형 광고 표시
-
-제3자 데이터:
-- Google (AI 분석): 얼굴 이미지 처리
-- AdMob (광고): 광고 맞춤화
-```
-
-### B. 추적 투명성 프레임워크
-```xml
-<!-- ios/App/App/Info.plist -->
-<key>NSUserTrackingUsageDescription</key>
-<string>맞춤형 광고를 제공하기 위해 앱 활동 추적을 허용해주세요.</string>
-```
-
-## 7. TestFlight 베타 테스트
-
-### A. 내부 테스터 그룹
-- 개발팀 및 가족/친구 (최대 100명)
-- 즉시 빌드 접근 가능
-- 90일간 테스트 가능
-
-### B. 외부 테스터 그룹
-- 공개 링크 또는 이메일 초대
-- Apple 검토 필요
-- 최대 10,000명 테스터
-
-### C. 베타 테스트 계획
-```
-Week 1: 내부 테스터 (20명)
-- 기본 기능 테스트
-- 버그 신고 및 수정
-
-Week 2: 외부 베타 (100명)
-- 사용자 경험 피드백
-- 성능 및 안정성 확인
-
-Week 3: 최종 빌드
-- 모든 피드백 반영
-- App Store 제출 준비
-```
-
-## 8. 심사 가이드라인 준수
-
-### A. 앱 스토어 심사 가이드라인
-- **2.1**: 앱 완전성 - 모든 기능 정상 작동
-- **2.3**: 정확한 메타데이터 - 설명과 실제 기능 일치
-- **3.1**: 결제 - IAP 사용 시 Apple 결제 시스템 필수
-- **5.1**: 개인정보 - 명확한 개인정보 처리방침
-
-### B. 광고 정책 준수
-- 아동 대상 광고 금지
-- 적절한 광고 배치
-- 사용자 추적 권한 요청
-- 광고 식별자(IDFA) 적절한 사용
-
-## 9. 빌드 및 제출 과정
-
-### A. Xcode에서 아카이브 생성
+### 1. 프로젝트 설정
 ```bash
-# Capacitor 동기화
+# iOS 플랫폼 추가 (이미 완료)
+npx cap add ios
+
+# 최신 코드 동기화
+npm run build
 npx cap sync ios
 
-# Xcode에서 열기
+# Xcode 프로젝트 열기
 npx cap open ios
-
-# Xcode 내에서:
-# 1. Product > Archive
-# 2. Distribute App
-# 3. App Store Connect
-# 4. Upload
 ```
 
-### B. App Store Connect에서 앱 정보 완성
-1. 스크린샷 업로드
-2. 앱 설명 입력
-3. 키워드 설정 (최대 100자)
-4. 지원 URL 및 연락처
-5. 개인정보 처리방침 URL
+### 2. Xcode 프로젝트 구성
 
-### C. 심사 제출
-- 심사용 계정 정보 제공
-- 특별한 기능 사용법 설명
-- 심사 노트 작성
+#### Bundle Identifier 설정
+- **값**: `app.personalityai.mobile`
+- **위치**: Target → General → Identity
 
-## 10. iOS 특화 기능 최적화
+#### 버전 정보
+- **Version**: 1.0.0
+- **Build**: 1
+- **Display Name**: Personality AI
 
-### A. 다크 모드 지원
-```css
-/* iOS Safari 다크 모드 감지 */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000000;
-    --text: #ffffff;
-  }
-}
+#### 앱 아이콘 설정
+```
+필요한 크기들:
+- 20x20 (2x, 3x)
+- 29x29 (2x, 3x)  
+- 40x40 (2x, 3x)
+- 60x60 (2x, 3x)
+- 76x76 (1x, 2x)
+- 83.5x83.5 (2x)
+- 1024x1024 (1x, Marketing)
 ```
 
-### B. Safe Area 대응
-```css
-/* iOS 노치 대응 */
-.header {
-  padding-top: env(safe-area-inset-top);
-}
+#### 앱 카테고리 및 설정
+- **Category**: Entertainment
+- **Age Rating**: 4+ (모든 연령)
+- **Supports iPad**: Yes
+- **Device Orientation**: Portrait
 
-.footer {
-  padding-bottom: env(safe-area-inset-bottom);
-}
+### 3. 코드 서명 설정
+
+#### Automatic Signing
+- **Team**: Apple Developer 팀 선택
+- **Provisioning Profile**: Automatic
+- **Signing Certificate**: Apple Development
+
+#### 배포용 설정
+```
+Release Configuration:
+- Code Signing Identity: Apple Distribution
+- Provisioning Profile: App Store Distribution
+- Code Signing Style: Automatic
 ```
 
-### C. 햅틱 피드백
-```typescript
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+### 4. Archive 생성
 
-// 성공 시 햅틱 피드백
-await Haptics.impact({ style: ImpactStyle.Light });
+#### Archive 과정
+1. **Device 선택**: Any iOS Device (arm64)
+2. **Scheme**: App (Release)
+3. **Menu**: Product → Archive
+4. **대기**: Archive 완료까지 3-5분
+
+#### Archive 검증
+- **Organizer 창**: Automatically opened
+- **Validate App**: 자동 검증 실행
+- **오류 확인**: 모든 오류 해결 필요
+
+## App Store Connect 설정
+
+### 1. 앱 등록
+
+#### 기본 정보
+```yaml
+앱 이름: "Personality AI"
+기본 언어: 한국어
+번들 ID: app.personalityai.mobile
+SKU: PERSONALITY-AI-001
 ```
 
-## 11. 출시 후 관리
-
-### A. 성능 모니터링
-- Xcode Organizer 크래시 리포트
-- App Store Connect 분석
-- 사용자 리뷰 모니터링
-
-### B. 업데이트 계획
-```
-v1.1 (출시 2주 후): 버그 수정
-v1.2 (출시 1개월 후): iOS 18 최적화
-v1.3 (출시 2개월 후): Widget 지원
-v2.0 (출시 3개월 후): Apple Intelligence 통합
+#### 앱 정보
+```yaml
+부제목: "얼굴로 보는 성격 분석 - MBTI 테스트"
+카테고리:
+  주: 엔터테인먼트
+  부: 라이프스타일
+콘텐츠 등급: 4+
 ```
 
-## 12. 비용 및 예상 일정
+### 2. 앱 설명 작성
 
-### A. 개발 비용
-- Apple Developer Program: $99/년
-- Mac 대여/구매: $1000-3000 (필요 시)
-- 앱 아이콘 디자인: $100-300
-- 총 예상 비용: $1199-3399
-
-### B. 개발 일정
+#### 앱 설명 (4000자 제한)
 ```
-Week 1-2: Apple 개발자 계정 및 Mac 환경 설정
-Week 3-4: iOS 빌드 및 테스트
-Week 5: App Store Connect 설정
-Week 6-7: TestFlight 베타 테스트
-Week 8: 심사 제출 및 출시
+🎭 AI 기술로 얼굴을 분석해 성격을 예측하는 혁신적인 앱
+
+Personality AI는 최첨단 인공지능 기술을 사용하여 사용자의 얼굴 특징을 분석하고, 과학적 근거에 기반한 성격 유형을 제시합니다.
+
+✨ 주요 기능
+• 즉시 분석: 카메라로 사진을 찍으면 바로 결과 확인
+• MBTI 예측: 16가지 성격 유형 중 가장 적합한 유형 제시
+• Big Five 분석: 5가지 주요 성격 특성 상세 분석
+• 다국어 지원: 한국어, 영어 완벽 지원
+• 개인정보 보호: 사진은 분석 후 즉시 삭제
+
+🧠 과학적 근거
+Google의 최신 AI 모델을 활용하여 얼굴의 미세한 특징들을 분석하고, 심리학 연구에 기반한 성격 예측을 제공합니다.
+
+🔒 완벽한 프라이버시
+• 사진은 서버에 저장되지 않음
+• 분석 완료 즉시 모든 데이터 삭제
+• 개인 식별 정보 수집 안함
+
+💎 프리미엄 기능
+• 무제한 분석 (기본: 일 3회)
+• 상세 성격 리포트
+• 분석 기록 비교
+• 광고 제거
+
+🎯 이런 분들께 추천
+• 자신의 성격을 객관적으로 알고 싶은 분
+• MBTI에 관심이 많은 분
+• 새로운 AI 기술을 체험하고 싶은 분
+• 친구들과 재미있는 시간을 보내고 싶은 분
+
+지금 바로 다운로드하여 AI가 분석한 나만의 성격을 확인해보세요!
 ```
 
-### C. 심사 예상 기간
-- 첫 번째 제출: 24-48시간
-- 거부 시 재제출: 24시간
-- 평균 승인률: 85% (첫 번째 제출)
+#### 홍보 텍스트 (170자 제한)
+```
+AI 얼굴 분석으로 당신의 성격과 MBTI 유형을 예측합니다. 카메라로 사진을 찍기만 하면 즉시 결과 확인! 한영 지원, 완벽한 개인정보 보호. 지금 바로 체험해보세요.
+```
 
-## 출시 체크리스트
+#### 키워드 (100자 제한)
+```
+성격분석,MBTI,얼굴분석,AI분석,성격테스트,심리테스트,성격유형,자기계발,심리,개성분석
+```
 
-### 기술적 준비
-- [ ] Apple Developer 계정 등록
-- [ ] macOS 개발 환경 구축
-- [ ] iOS 프로젝트 빌드 테스트
-- [ ] 실제 iOS 기기 테스트
-- [ ] 앱 아이콘 및 스크린샷 준비
+### 3. 스크린샷 준비
 
-### App Store Connect
-- [ ] 앱 정보 등록 완료
-- [ ] 개인정보 보고서 작성
-- [ ] 가격 및 배포 설정
-- [ ] TestFlight 베타 테스트 완료
-- [ ] 심사 제출
+#### iPhone 6.7" (필수)
+```
+크기: 1290 x 2796 pixels
+개수: 3-10개
+형식: PNG, JPG
+```
 
-### 법적 준비
-- [ ] 개인정보 처리방침 iOS 대응
-- [ ] 이용약관 업데이트
-- [ ] 추적 투명성 정책 준수
-- [ ] 아동 보호 정책 확인
+스크린샷 구성:
+1. **메인 화면**: 카메라 촬영 인터페이스
+2. **분석 결과**: MBTI 유형과 특성 그래프
+3. **상세 분석**: Big Five 레이더 차트
+4. **언어 지원**: 한영 전환 기능
+5. **기록 관리**: 과거 분석 히스토리
 
-Android와 iOS 동시 출시로 더 많은 사용자에게 도달할 수 있으며, 양쪽 플랫폼의 수익을 합쳐 월 $200-800 수준의 수익을 기대할 수 있습니다.
+#### iPhone 6.5" (필수)
+```
+크기: 1242 x 2688 pixels
+개수: 3-10개
+동일한 스크린샷을 해상도만 조정
+```
+
+#### iPad Pro 12.9" (권장)
+```
+크기: 2048 x 2732 pixels
+개수: 1-10개
+태블릿 최적화된 레이아웃 강조
+```
+
+### 4. 앱 미리보기 동영상 (선택사항)
+
+#### 기술 요구사항
+```yaml
+길이: 15-30초
+해상도: 1080p 이상
+형식: MOV, MP4
+크기: 500MB 이하
+```
+
+#### 동영상 구성
+1. **앱 로고** (2초)
+2. **카메라 촬영** (5초)
+3. **AI 분석 과정** (3초)
+4. **결과 표시** (10초)
+5. **주요 기능 하이라이트** (8초)
+6. **다운로드 유도** (2초)
+
+## 앱 업로드 및 제출
+
+### 1. Binary 업로드
+
+#### Xcode에서 업로드
+```
+Steps:
+1. Archive에서 "Distribute App" 클릭
+2. "App Store Connect" 선택
+3. "Upload" 선택
+4. 자동 서명 사용
+5. 업로드 완료 대기 (5-10분)
+```
+
+#### 업로드 확인
+- **App Store Connect**: 새 빌드 확인
+- **처리 시간**: 10-60분
+- **상태**: Processing → Ready for Submit
+
+### 2. 버전 정보 설정
+
+#### 이번 버전의 새로운 기능
+```
+• 첫 번째 iOS 출시
+• AI 기반 얼굴 분석으로 MBTI 성격 유형 예측
+• 한국어, 영어 완벽 지원
+• 실시간 분석 및 즉시 결과 확인
+• 완벽한 개인정보 보호 (분석 후 즉시 삭제)
+• Big Five 성격 특성 상세 분석
+• 일일 무료 분석 3회 제공
+• 프리미엄 구독으로 무제한 이용 가능
+```
+
+### 3. 가격 및 출시 설정
+
+#### 가격 정보
+```yaml
+가격: 무료
+인앱 구매: 있음
+프리미엄 구독: $2.99/월
+```
+
+#### 출시 일정
+```yaml
+자동 출시: 승인 즉시
+수동 출시: 승인 후 수동 출시
+특정 날짜: 지정된 날짜에 출시
+```
+
+#### 출시 지역
+```
+초기 출시 지역:
+- 한국 (주요 타겟)
+- 미국 (글로벌 확산)
+- 일본 (아시아 시장)
+- 영국 (유럽 진입)
+
+점진적 확대:
+- 호주, 캐나다
+- 독일, 프랑스
+- 기타 영어권 국가
+```
+
+### 4. 앱 심사 정보
+
+#### 연락처 정보
+```yaml
+검토 담당자 이름: [개발자 이름]
+전화번호: [국제 형식]
+이메일: support@personalityai.app
+```
+
+#### 데모 계정 (필요시)
+```yaml
+사용자명: demo@personalityai.app
+비밀번호: DemoPassword123!
+추가 설명: 모든 기능 접근 가능
+```
+
+#### 참고사항
+```
+• AI 분석은 실제 Google Gemini API 사용
+• 사용자 사진은 분석 후 즉시 삭제됨
+• 개인정보 수집하지 않음
+• 광고는 AdMob 사용
+• 모든 기능은 실제 작동함
+```
+
+## 심사 과정 및 대응
+
+### 심사 소요 시간
+- **일반적**: 24-48시간
+- **최대**: 7일
+- **재심사**: 24시간
+
+### 일반적인 거부 사유와 대응
+
+#### 1. 개인정보 처리방침 관련
+**문제**: 개인정보 처리방침 링크 접근 불가
+**해결**: 
+- 앱 내 설정에서 접근 가능하도록 수정
+- 웹사이트에서도 접근 가능한 링크 제공
+
+#### 2. 기능 설명 불충분
+**문제**: AI 분석 방식에 대한 설명 부족
+**해결**:
+- 앱 설명에 AI 기술 상세 설명 추가
+- "과학적 근거" 섹션 강화
+
+#### 3. 인앱 구매 정보 미흡
+**문제**: 구독 모델 설명 부족
+**해결**:
+- 프리미엄 기능 명확한 구분
+- 구독 취소 방법 명시
+
+### 거부 시 대응 절차
+1. **거부 사유 분석**: Apple 제공 피드백 상세 검토
+2. **문제 해결**: 지적된 사항 즉시 수정
+3. **재제출**: 24시간 내 재제출
+4. **추가 설명**: Resolution Center 통해 설명 제공
+
+## 출시 후 관리
+
+### 첫 주 모니터링
+```yaml
+다운로드 수: 목표 1,000회
+평점: 목표 4.0/5.0 이상
+리뷰: 목표 50개 이상
+충돌율: 목표 1% 이하
+```
+
+### 사용자 피드백 대응
+- **리뷰 모니터링**: 일 2회 확인
+- **버그 리포트**: 24시간 내 확인
+- **기능 요청**: 다음 버전 계획에 반영
+
+### 업데이트 계획
+```
+v1.0.1 (출시 후 1주):
+- 긴급 버그 수정
+- 사용자 피드백 반영
+
+v1.1.0 (출시 후 1개월):
+- 일본어 지원 추가
+- UI/UX 개선
+- 새로운 분석 지표
+
+v1.2.0 (출시 후 3개월):
+- 소셜 공유 기능
+- 분석 결과 비교
+- 성격 매칭 기능
+```
+
+## 마케팅 및 홍보
+
+### 출시 발표
+1. **소셜 미디어**: 인스타그램, 트위터 동시 발표
+2. **보도자료**: 기술 블로그 및 앱 리뷰 사이트
+3. **커뮤니티**: Reddit, MBTI 관련 온라인 커뮤니티
+
+### App Store 최적화
+- **키워드 모니터링**: 주간 순위 확인
+- **스크린샷 A/B 테스트**: 전환율 개선
+- **설명 최적화**: 사용자 검색어 반영
+
+### 성과 측정
+```yaml
+핵심 지표:
+- 다운로드 수
+- 평점 및 리뷰
+- 일일/월간 활성 사용자
+- 구독 전환율
+- 수익 (광고 + 구독)
+```
+
+이 가이드를 따라 진행하면 iOS App Store에서 성공적인 출시를 할 수 있으며, Android 버전과 함께 양대 플랫폼에서 안정적인 사용자 기반을 구축할 수 있습니다.
