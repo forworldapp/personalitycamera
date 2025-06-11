@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import CameraViewport from "./camera-viewport";
 import PersonalityLoading from "./personality-loading";
 import QuickCaptureFeedback from "./quick-capture-feedback";
+import CameraFlash from "./camera-flash";
 import { useHaptics } from "@/hooks/useHaptics";
 
 interface PersonalityResult {
@@ -36,10 +37,13 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [language, setLanguage] = useState<'ko' | 'en'>('ko');
   const [showLoading, setShowLoading] = useState(false);
+  const [showCaptureFeedback, setShowCaptureFeedback] = useState(false);
+  const [showFlash, setShowFlash] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const haptics = useHaptics();
 
   const analyzePersonality = useMutation({
     mutationFn: async (imageFile: File): Promise<PersonalityResult> => {
@@ -118,6 +122,10 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
     if (!stream) return;
 
     try {
+      // Show flash effect first
+      setShowFlash(true);
+      haptics.impact('medium');
+
       // Create canvas to capture frame using the same logic as working camera
       const video = document.querySelector('video') as HTMLVideoElement;
       if (!video) {
@@ -165,8 +173,15 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
             setCapturedImage(canvas.toDataURL('image/jpeg'));
             stopCamera();
             
-            // Analyze the image
-            analyzePersonality.mutate(file);
+            // Show capture feedback with haptic
+            haptics.notification('success');
+            setShowCaptureFeedback(true);
+            
+            // Start analysis after feedback
+            setTimeout(() => {
+              analyzePersonality.mutate(file);
+            }, 1500);
+            
             resolve();
           } catch (error) {
             console.error('File creation error:', error);
@@ -286,6 +301,12 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
           }
         </p>
       </div>
+
+      {/* Quick Capture Feedback */}
+      <QuickCaptureFeedback 
+        isVisible={showCaptureFeedback}
+        onComplete={() => setShowCaptureFeedback(false)}
+      />
 
       {/* Personality Loading Modal */}
       <PersonalityLoading 
