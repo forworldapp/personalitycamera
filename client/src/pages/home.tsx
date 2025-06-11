@@ -9,6 +9,9 @@ import RewardedAd from "@/components/ads/rewarded-ad";
 import { useAdManager } from "@/hooks/useAdManager";
 import { Button } from "@/components/ui/button";
 import { Zap, BarChart3 } from "lucide-react";
+import SafeArea from "@/components/ios/safe-area";
+import { useHaptics } from "@/hooks/useHaptics";
+import { usePlatform } from "@/hooks/usePlatform";
 
 interface PersonalityResult {
   id: string;
@@ -36,6 +39,8 @@ export default function Home() {
   const [language, setLanguage] = useState<'ko' | 'en'>('ko');
   
   const adManager = useAdManager();
+  const haptics = useHaptics();
+  const { isIOS } = usePlatform();
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -61,6 +66,7 @@ export default function Home() {
     setCapturedImage(image);
     adManager.incrementAnalysisCount();
     adManager.showInterstitialAd();
+    haptics.notification('success');
   };
 
   const handleCameraStart = () => {
@@ -74,6 +80,7 @@ export default function Home() {
   const handleRetake = () => {
     setCurrentResult(null);
     setCapturedImage(null);
+    haptics.impact('light');
   };
 
   if (isLoading) {
@@ -96,7 +103,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100">
+    <SafeArea className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
@@ -241,6 +248,6 @@ export default function Home() {
         onRewardEarned={adManager.earnReward}
         rewardText="무료 분석 1회 추가"
       />
-    </div>
+    </SafeArea>
   );
 }
