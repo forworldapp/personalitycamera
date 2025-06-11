@@ -4,6 +4,9 @@ import { Camera, StopCircle, RotateCcw } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import CameraViewport from "./camera-viewport";
+import PersonalityLoading from "./personality-loading";
+import QuickCaptureFeedback from "./quick-capture-feedback";
+import { useHaptics } from "@/hooks/useHaptics";
 
 interface PersonalityResult {
   id: string;
@@ -32,6 +35,7 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
   const [cameraActive, setCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [language, setLanguage] = useState<'ko' | 'en'>('ko');
+  const [showLoading, setShowLoading] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
@@ -39,6 +43,7 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
 
   const analyzePersonality = useMutation({
     mutationFn: async (imageFile: File): Promise<PersonalityResult> => {
+      setShowLoading(true);
       console.log('Created file:', imageFile.name, imageFile.size, imageFile.type);
       console.log('Starting personality analysis with file:', imageFile.name, imageFile.size, imageFile.type);
       
@@ -64,6 +69,7 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
     },
     onSuccess: (data: PersonalityResult) => {
       console.log('Analysis complete:', data);
+      setShowLoading(false);
       if (capturedImage) {
         onAnalysisComplete(data, capturedImage);
       }
@@ -71,6 +77,7 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
     },
     onError: (error) => {
       console.error('Analysis failed:', error);
+      setShowLoading(false);
       toast({
         title: "분석 실패",
         description: "성격 분석 중 오류가 발생했습니다. 다시 시도해주세요.",
@@ -279,6 +286,12 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
           }
         </p>
       </div>
+
+      {/* Personality Loading Modal */}
+      <PersonalityLoading 
+        isVisible={showLoading}
+        onComplete={() => setShowLoading(false)}
+      />
     </div>
   );
 }
