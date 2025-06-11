@@ -302,6 +302,12 @@ export default function PersonalityCamera({ onAnalysisComplete }: PersonalityCam
         </p>
       </div>
 
+      {/* Camera Flash Effect */}
+      <CameraFlash 
+        isVisible={showFlash}
+        onComplete={() => setShowFlash(false)}
+      />
+
       {/* Quick Capture Feedback */}
       <QuickCaptureFeedback 
         isVisible={showCaptureFeedback}
