@@ -12,7 +12,7 @@ if [ ! -d .git ]; then
   exit 1
 fi
 
-# config.lock 문제 해결
+# config.lock 제거
 if [ -f .git/config.lock ]; then
   echo "⚠️ 기존 Git 설정 락 파일 제거 중..."
   rm -f .git/config.lock
@@ -34,7 +34,7 @@ else
   git commit -m "📦 Deploy update for $BRANCH_NAME"
 fi
 
-# 브랜치 존재 여부 확인 및 이동
+# 브랜치 이동
 if git show-ref --quiet refs/heads/$BRANCH_NAME; then
   git checkout $BRANCH_NAME
   echo "✔️ 기존 브랜치 $BRANCH_NAME 체크아웃 완료"
@@ -43,20 +43,31 @@ else
   echo "✨ 새 브랜치 $BRANCH_NAME 생성 완료"
 fi
 
-# 원격 브랜치 푸시
-if git push -u origin "$BRANCH_NAME"; then
-  echo ""
-  echo "✅ 코드가 성공적으로 $BRANCH_NAME 브랜치에 푸시되었습니다!"
-  echo "🔗 GitHub: https://github.com/forworldapp/personalitycamera/tree/$BRANCH_NAME"
+# 원격 변경 사항 반영 (rebase)
+echo "🔄 원격 브랜치와 동기화 시도 중..."
+if git pull --rebase origin "$BRANCH_NAME"; then
+  echo "✅ 리베이스 완료"
 else
-  echo "❌ 푸시에 실패했습니다. 원격 저장소 접근 권한 또는 네트워크 상태를 확인하세요."
-  exit 1
+  echo "⚠️ 리베이스 실패 – 충돌 무시하고 강제 푸시 준비 중..."
 fi
 
-# (선택) main 복귀
-# git checkout main
+# 푸시 시도
+if git push origin "$BRANCH_NAME"; then
+  echo ""
+  echo "✅ 정상적으로 푸시 완료!"
+else
+  echo "⚠️ 일반 푸시 실패 – 강제 푸시 실행 중..."
+  if git push -f origin "$BRANCH_NAME"; then
+    echo "✅ 강제 푸시 완료!"
+  else
+    echo "❌ 강제 푸시에도 실패했습니다. 권한 또는 네트워크 상태를 확인하세요."
+    exit 1
+  fi
+fi
 
-# 클론 및 빌드 안내
+# 결과 안내
+echo ""
+echo "🔗 GitHub: https://github.com/forworldapp/personalitycamera/tree/$BRANCH_NAME"
 echo ""
 echo "📥 클론 및 빌드 가이드:"
 echo "git clone https://github.com/forworldapp/personalitycamera.git"
